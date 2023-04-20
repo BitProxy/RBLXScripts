@@ -1,9 +1,15 @@
 local DataModel = game;
 repeat DataModel = game wait() until DataModel ~= nil
 
+local RunService = DataModel:GetService("RunService")
 local Workspace = DataModel:GetService("Workspace")
 local Lighting = DataModel:GetService("Lighting")
-local Terrain = Workspace:FindFirstChildWhichIsA("Terrain")
+local Terrain = Workspace:WaitForChild("Terrain")
+
+local function Render()
+  RunService.Heartbeat:Wait()
+end
+
 Terrain.WaterWaveSize = 0
 Terrain.WaterWaveSpeed = 0
 Terrain.WaterReflectance = 0
@@ -18,6 +24,9 @@ function Simplify(part)
     part.Enabled = false
   elseif part:IsA("Explosion") then
     part.Visible = false
+  elseif part:IsA("Fire") or part:IsA("Smoke") or part:IsA("Sparkles") or part:IsA("ForceField") then
+    Render()
+    part:Destroy()
   end
 end
 
