@@ -8,6 +8,7 @@ local Chat = game:GetService("Chat")
 
 local printingcons = printconsole or consoleprint or function(a)end -- or warn
 printingcons("Chat Bypasser made by BitProxy.")
+printingcons("Rip, BitProxy (Terminated)")
 
 local create = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/BitProxy/Studio-Scripts/main/create.lua"))()
 local ChatRemotes = ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents")
