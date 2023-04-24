@@ -34,7 +34,7 @@ local CornerUi = create.createInstance("UICorner", {
 local ScriptTitle = create.createInstance("TextLabel", {Name = "ScriptTitle", Parent = MainFrame, Text = "Chat Bypasser [0.1.5]", Font = Enum.Font.GothamBold, BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 35), TextScaled = true})
 local Line = create.createInstance("Frame", {Parent = ScriptTitle, Name = "Line", BorderSizePixel = 0, BackgroundColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 2), Position = UDim2.new(0, 0, 1, 0)})
 local BypassFrame = create.createInstance("Frame", {Name = "Bypass", Parent = MainFrame, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, -37), Position = UDim2.new(0, 0, 0, 37)})
-local Desc = create.createInstance("TextLabel", {Name = "Description", Parent = BypassFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 136), Size = UDim2.new(0, 400, 0, 15), Font = Enum.Font.Gotham, Text = "Adds more keys (not perfect)", TextColor3 = Color3.fromRGB(170, 50, 50), TextSize = 14})
+local Desc = create.createInstance("TextLabel", {Name = "Description", Parent = BypassFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 136), Size = UDim2.new(0, 400, 0, 15), Font = Enum.Font.Gotham, Text = "[ALT KEYS] - Adds more keys", TextColor3 = Color3.fromRGB(170, 50, 50), TextSize = 14})
 local InputTextBox = create.createInstance("TextBox", {
 	Name = "Input",
 	Parent = BypassFrame,
@@ -77,8 +77,8 @@ function createStatus(data)
 end
 local status1 = createStatus({txt = "Auto Review", pst = UDim2.new(0, 0, 0, 4), iso = true})
 local status2 = createStatus({txt = "Auto Send", pst = UDim2.new(0, 0, 0, 38), iso = true})
-local status3 = createStatus({txt = "Toggle '⁥К'", pst = UDim2.new(0, 0, 0, 72), iso = true})
-local status4 = createStatus({txt = "Alt Keys", pst = UDim2.new(0, 0, 0, 106), iso = false})
+local status3 = createStatus({txt = "Alt Keys", pst = UDim2.new(0, 0, 0, 72), iso = false})
+local status4 = createStatus({txt = "Chat Notify", pst = UDim2.new(0, 0, 0, 106), iso = false})
 
 local CreditsOpened = false
 local TweenProcessing = false
@@ -86,8 +86,8 @@ local CustomChatTo = "All"
 
 local AutomaticallySend = true
 local AutomaticallyReview = true
-local ToggleKeyK = true
-local AutomaticallyKick = false
+local ToggleAltKeys = false
+local ToggledNotifications = false
 
 
 if game.PlaceId == 142823291 then
@@ -103,8 +103,6 @@ function byted(char)
 	local s = string.byte(char, 1, 1)
 	return tostring(s)
 end
-
--- KEYs: E, e, O, o, H, x, A, a, M, N, T, s, c, p
 
 local BYTES = {
 	-- Uppercase
@@ -142,7 +140,9 @@ local ALTSBYTES = {
 	["81"] = "\212\154"; -- Q
 	["71"] = "\212\140"; -- G
 	["87"] = "\212\156"; -- W
+	["75"] = "\208\154"; -- K
 	-- Lowercase
+	["103"] = "\196\161"; -- g
 	["119"] = "\212\157"; -- w
 	["113"] = "\212\155"; -- q
 	["105"] = "\195\173"; -- i
@@ -161,12 +161,7 @@ function returnBypassMethod(str)
 		if BYTES[byte] ~= nil then
 			newChar = BYTES[byte]
 		end
-		if ToggleKeyK then
-			if byte == "75" then -- K
-				newChar = "\208\154"
-			end
-		end
-		if AutomaticallyKick then
+		if ToggleAltKeys then
 			if ALTSBYTES[byte] ~= nil then
 				newChar = ALTSBYTES[byte]
 			end
@@ -177,22 +172,26 @@ function returnBypassMethod(str)
 end
 
 function RequestMessage(msg)
-	if string.len(msg) > 200 then
-		StarterGui:SetCore("ChatMakeSystemMessage", {
-			Text = "{Script}: Your message may not be sent due to the amount of characters. Max Limit Characters: <200\nUnder 201 characters.",
-			Color = Color3.fromRGB(200, 50, 25),
-			Font = Enum.Font.Arial,
-			FontSize = Enum.FontSize.Size24
-		})
+	if ToggledNotifications then
+		if string.len(msg) > 200 then
+			StarterGui:SetCore("ChatMakeSystemMessage", {
+				Text = "{Script}: Your message may not be sent due to the amount of characters. Max Limit Characters: <200\nUnder 201 characters.",
+				Color = Color3.fromRGB(200, 50, 25),
+				Font = Enum.Font.Arial,
+				FontSize = Enum.FontSize.Size24
+			})
+		end
 	end
 	ChatRemotes.SayMessageRequest:FireServer(msg, CustomChatTo)
-	if string.sub(Chat:FilterStringForBroadcast(msg, Players.LocalPlayer), 1, 6) == "######" then
-		StarterGui:SetCore("ChatMakeSystemMessage", {
-			Text = "{Script}: Your message has been moderated. Don't worry, you cannot be banned from the report system.",
-			Color = Color3.fromRGB(200, 50, 25),
-			Font = Enum.Font.Arial,
-			FontSize = Enum.FontSize.Size24
-		})
+	if ToggledNotifications then
+		if string.sub(Chat:FilterStringForBroadcast(msg, Players.LocalPlayer), 1, 6) == "######" then
+			StarterGui:SetCore("ChatMakeSystemMessage", {
+				Text = "{Script}: Your message has been moderated. Don't worry, you cannot be banned from the report system.",
+				Color = Color3.fromRGB(200, 50, 25),
+				Font = Enum.Font.Arial,
+				FontSize = Enum.FontSize.Size24
+			})
+		end
 	end
 end
 
@@ -263,17 +262,17 @@ end)
 status3.MouseButton1Click:Connect(function()
 	if TweenProcessing2 == true then return end
 	TweenProcessing2 = true
-	if ToggleKeyK == true then
+	if ToggleAltKeys == true then
 		tween(status3, t, {
 			BackgroundColor3 = Color3.fromRGB(200, 50, 25)
 		})
-		ToggleKeyK = false
+		ToggleAltKeys = false
 		wait(0.4)
 	else
 		tween(status3, t, {
 			BackgroundColor3 = Color3.fromRGB(125, 255, 100)
 		})
-		ToggleKeyK = true
+		ToggleAltKeys = true
 		wait(0.4)
 	end
 	TweenProcessing2 = false
@@ -282,17 +281,17 @@ end)
 status4.MouseButton1Click:Connect(function()
 	if TweenProcessing3 == true then return end
 	TweenProcessing3 = true
-	if AutomaticallyKick == true then
+	if ToggledNotifications == true then
 		tween(status4, t, {
 			BackgroundColor3 = Color3.fromRGB(200, 50, 25)
 		})
-		AutomaticallyKick = false
+		ToggledNotifications = false
 		wait(0.4)
 	else
 		tween(status4, t, {
 			BackgroundColor3 = Color3.fromRGB(125, 255, 100)
 		})
-		AutomaticallyKick = true
+		ToggledNotifications = true
 		wait(0.4)
 	end
 	TweenProcessing3 = false
