@@ -100,8 +100,11 @@ function getchars()
 end
 
 function byted(char)
-	local s = string.byte(char, 1, 1)
-	return tostring(s)
+	local s = {}
+	for index, value in pairs({string.byte(char, 1, string.len(char))}) do
+		table.insert(s, tostring(value))
+	end
+	return s
 end
 
 local BYTES = {
@@ -152,12 +155,13 @@ local ALTSBYTES = {
 	-- Numbers
 	["51"] = "\208\151"; -- 3
 }
-
+local ignoreBytes = {"92","58","47","32","59","91","93","61","43","63","126","96","39","34","60","62","124"}
+local SHOULDIGNORE = false
 function returnBypassMethod(str)
 	local REAL = ""
 	for i = 1, string.len(str) do
 		local newChar = string.sub(str, i, i)
-		local byte = byted(newChar)
+		local byte = byted(newChar)[1]
 		if BYTES[byte] ~= nil then
 			newChar = BYTES[byte]
 		end
@@ -166,7 +170,15 @@ function returnBypassMethod(str)
 				newChar = ALTSBYTES[byte]
 			end
 		end
-		REAL = REAL .. getchars() .. newChar
+		if SHOULDIGNORE then
+			if ignoreBytes[byte] == nil then
+				REAL = REAL .. getchars() .. newChar
+			else
+				REAL = REAL .. newChar
+			end
+		else
+			REAL = REAL .. getchars() .. newChar
+		end
 	end
 	return REAL
 end
