@@ -36,7 +36,7 @@ local MainFrame = create.createInstance("Frame", {
 local CornerUi = create.createInstance("UICorner", {
 	Parent = MainFrame,
 })
-local ScriptTitle = create.createInstance("TextLabel", {Name = "ScriptTitle", Parent = MainFrame, Text = "Chat Bypasser [0.1.5]", Font = Enum.Font.GothamBold, BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 35), TextScaled = true})
+local ScriptTitle = create.createInstance("TextLabel", {Name = "ScriptTitle", Parent = MainFrame, Text = "Chat Bypasser [0.2.8]", Font = Enum.Font.GothamBold, BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 35), TextScaled = true})
 local Line = create.createInstance("Frame", {Parent = ScriptTitle, Name = "Line", BorderSizePixel = 0, BackgroundColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 2), Position = UDim2.new(0, 0, 1, 0)})
 local BypassFrame = create.createInstance("Frame", {Name = "Bypass", Parent = MainFrame, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, -37), Position = UDim2.new(0, 0, 0, 37)})
 local Desc = create.createInstance("TextLabel", {Name = "Description", Parent = BypassFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 136), Size = UDim2.new(0, 400, 0, 15), Font = Enum.Font.Gotham, Text = "[ALT KEYS] - Adds more keys", TextColor3 = Color3.fromRGB(170, 50, 50), TextSize = 14})
