@@ -1,3 +1,8 @@
+if deleteui then
+	deleteui()
+	wait(0.1)
+end
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local TextService = game:GetService("TextService")
@@ -35,6 +40,7 @@ local ScriptTitle = create.createInstance("TextLabel", {Name = "ScriptTitle", Pa
 local Line = create.createInstance("Frame", {Parent = ScriptTitle, Name = "Line", BorderSizePixel = 0, BackgroundColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 2), Position = UDim2.new(0, 0, 1, 0)})
 local BypassFrame = create.createInstance("Frame", {Name = "Bypass", Parent = MainFrame, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, -37), Position = UDim2.new(0, 0, 0, 37)})
 local Desc = create.createInstance("TextLabel", {Name = "Description", Parent = BypassFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 136), Size = UDim2.new(0, 400, 0, 15), Font = Enum.Font.Gotham, Text = "[ALT KEYS] - Adds more keys", TextColor3 = Color3.fromRGB(170, 50, 50), TextSize = 14})
+local Desc2 = create.createInstance("TextLabel", {Name = "Description", Parent = BypassFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 151), Size = UDim2.new(0, 400, 0, 15), Font = Enum.Font.Gotham, Text = "Stops creating characters in Spaces, Emoji Characters.", TextColor3 = Color3.fromRGB(170, 50, 50), TextSize = 14})
 local InputTextBox = create.createInstance("TextBox", {
 	Name = "Input",
 	Parent = BypassFrame,
@@ -78,7 +84,7 @@ end
 local status1 = createStatus({txt = "Auto Review", pst = UDim2.new(0, 0, 0, 4), iso = true})
 local status2 = createStatus({txt = "Auto Send", pst = UDim2.new(0, 0, 0, 38), iso = true})
 local status3 = createStatus({txt = "Alt Keys", pst = UDim2.new(0, 0, 0, 72), iso = false})
-local status4 = createStatus({txt = "Chat Notify", pst = UDim2.new(0, 0, 0, 106), iso = false})
+local status4 = createStatus({txt = "Ignore Characters", pst = UDim2.new(0, 0, 0, 106), iso = false})
 
 local CreditsOpened = false
 local TweenProcessing = false
@@ -87,7 +93,7 @@ local CustomChatTo = "All"
 local AutomaticallySend = true
 local AutomaticallyReview = true
 local ToggleAltKeys = false
-local ToggledNotifications = false
+local IgnoreCharacters = false
 
 
 if game.PlaceId == 142823291 then
@@ -155,8 +161,7 @@ local ALTSBYTES = {
 	-- Numbers
 	["51"] = "\208\151"; -- 3
 }
-local ignoreBytes = {"92","58","47","32","59","91","93","61","43","63","126","96","39","34","60","62","124"}
-local SHOULDIGNORE = false
+local ignoreBytes = {"33", "64", "35", "36", "37", "94", "38", "42", "40", "41", "124", "123", "125", "91", "93", "58", "59", "47", "92", "62", "60", "63", "126", "96", "45", "95", "43", "61"}
 function returnBypassMethod(str)
 	local REAL = ""
 	for i = 1, string.len(str) do
@@ -170,7 +175,7 @@ function returnBypassMethod(str)
 				newChar = ALTSBYTES[byte]
 			end
 		end
-		if SHOULDIGNORE then
+		if IgnoreCharacters == true then
 			if ignoreBytes[byte] == nil then
 				REAL = REAL .. getchars() .. newChar
 			else
@@ -182,29 +187,9 @@ function returnBypassMethod(str)
 	end
 	return REAL
 end
-
+print(returnBypassMethod("pornhub.com"))
 function RequestMessage(msg)
-	if ToggledNotifications then
-		if string.len(msg) > 200 then
-			StarterGui:SetCore("ChatMakeSystemMessage", {
-				Text = "{Script}: Your message may not be sent due to the amount of characters. Max Limit Characters: <200\nUnder 201 characters.",
-				Color = Color3.fromRGB(200, 50, 25),
-				Font = Enum.Font.Arial,
-				FontSize = Enum.FontSize.Size24
-			})
-		end
-	end
 	ChatRemotes.SayMessageRequest:FireServer(msg, CustomChatTo)
-	if ToggledNotifications then
-		if string.sub(Chat:FilterStringForBroadcast(msg, Players.LocalPlayer), 1, 6) == "######" then
-			StarterGui:SetCore("ChatMakeSystemMessage", {
-				Text = "{Script}: Your message has been moderated. Don't worry, you cannot be banned from the report system.",
-				Color = Color3.fromRGB(200, 50, 25),
-				Font = Enum.Font.Arial,
-				FontSize = Enum.FontSize.Size24
-			})
-		end
-	end
 end
 
 -- Roles
@@ -293,17 +278,17 @@ end)
 status4.MouseButton1Click:Connect(function()
 	if TweenProcessing3 == true then return end
 	TweenProcessing3 = true
-	if ToggledNotifications == true then
+	if IgnoreCharacters == true then
 		tween(status4, t, {
 			BackgroundColor3 = Color3.fromRGB(200, 50, 25)
 		})
-		ToggledNotifications = false
+		IgnoreCharacters = false
 		wait(0.4)
 	else
 		tween(status4, t, {
 			BackgroundColor3 = Color3.fromRGB(125, 255, 100)
 		})
-		ToggledNotifications = true
+		IgnoreCharacters = true
 		wait(0.4)
 	end
 	TweenProcessing3 = false
@@ -321,17 +306,10 @@ InputTextBox.FocusLost:Connect(function(enterPressed)
 	end
 end)
 
-ret = function(str)
-	local tab = ""
-	for i,v in pairs({string.byte(str, 1, string.len(str))}) do
-		tab = tab.."\\"..v
-	end
-	return tab
-end
-
 function imp()
 	getgenv().deleteui = function()
 		create.RemoveInstance(MainBypassUi)
+		getgenv().deleteui = nil
 	end
 end
 
