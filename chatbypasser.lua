@@ -3,6 +3,8 @@ if deleteui then
 	wait(0.1)
 end
 
+local CLOSE_PROMPT_REQUEST = "delprompt"
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local TextService = game:GetService("TextService")
@@ -11,32 +13,17 @@ local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local Chat = game:GetService("Chat")
 
+local ChatRemotes = ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents")
+local create = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/BitProxy/Studio-Scripts/main/create.lua"))()
+
 local printingcons = printconsole or consoleprint or function(a)end -- or warn
 printingcons("Chat Bypasser made by BitProxy.")
 printingcons("Rip, BitProxy (Terminated)")
 
-local create = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/BitProxy/Studio-Scripts/main/create.lua"))()
-local ChatRemotes = ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents")
-
-local MainBypassUi = create.createInstance("ScreenGui", {
-	Name = "RolboxGui",
-	DisplayOrder = 7,
-	Parent = CoreGui:FindFirstChild("RobloxGui"),
-})
-local MainFrame = create.createInstance("Frame", {
-	Name = "Main",
-	Active = true,
-	Draggable = true,
-	BackgroundColor3 = Color3.fromRGB(46, 46, 46),
-	BorderSizePixel = 0,
-	Position = UDim2.new(0, 50, 0, 50),
-	Size = UDim2.new(0, 400, 0, 350),
-	Parent = MainBypassUi,
-})
-local CornerUi = create.createInstance("UICorner", {
-	Parent = MainFrame,
-})
-local ScriptTitle = create.createInstance("TextLabel", {Name = "ScriptTitle", Parent = MainFrame, Text = "Chat Bypasser [0.2.8]", Font = Enum.Font.GothamBold, BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 35), TextScaled = true})
+local MainBypassUi = create.createInstance("ScreenGui", {Name = "RolboxGui", DisplayOrder = 7, Parent = CoreGui:FindFirstChild("RobloxGui")})
+local MainFrame = create.createInstance("Frame", {Name = "Main", Active = true, Draggable = true, BackgroundColor3 = Color3.fromRGB(46, 46, 46), BorderSizePixel = 0, Position = UDim2.new(0, 50, 0, 50), Size = UDim2.new(0, 400, 0, 350), Parent = MainBypassUi})
+local CornerUi = create.createInstance("UICorner", {Parent = MainFrame})
+local ScriptTitle = create.createInstance("TextLabel", {Name = "ScriptTitle", Parent = MainFrame, Text = "Chat Bypasser [0.3.0]", Font = Enum.Font.GothamBold, BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 35), TextScaled = true})
 local Line = create.createInstance("Frame", {Parent = ScriptTitle, Name = "Line", BorderSizePixel = 0, BackgroundColor3 = Color3.fromRGB(255, 255, 255), Size = UDim2.new(1, 0, 0, 2), Position = UDim2.new(0, 0, 1, 0)})
 local BypassFrame = create.createInstance("Frame", {Name = "Bypass", Parent = MainFrame, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, -37), Position = UDim2.new(0, 0, 0, 37)})
 local Desc = create.createInstance("TextLabel", {Name = "Description", Parent = BypassFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 136), Size = UDim2.new(0, 400, 0, 15), Font = Enum.Font.Gotham, Text = "[ALT KEYS] - Adds more keys", TextColor3 = Color3.fromRGB(170, 50, 50), TextSize = 14})
@@ -296,6 +283,9 @@ end)
 
 InputTextBox.FocusLost:Connect(function(enterPressed)
 	if enterPressed then
+		if InputTextBox.Text == CLOSE_PROMPT_REQUEST then
+			return deleteui()
+		end
 		if InputTextBox.Text == '' then return end
 		if not AutomaticallySend then return end
 		if not AutomaticallyReview then
