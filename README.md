@@ -20,3 +20,11 @@ This is a script to bypass the Roblox chat system. Currently 4 setting(s). **ban
 | Auto Send | When pressing Enter/Return to loose focus of TextBox Input, message will be sent. |
 | Alt Keys | Adds more keys like N, G, Q, i, n |
 | Ignore Characters | Ignores keys like Spaces, Exclaimation marks, etc. (Emojis Soon) |
+
+### Loader
+
+#### Source
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BitProxy/RBLXScripts/main/chatbypasser.lua"))()
+```
