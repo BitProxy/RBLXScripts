@@ -12,7 +12,7 @@ Roblox Scripts (Opened Source) by BitProxy.
 #### Scripted by BitProxy(HTTPRequester)
 
 This is a script to bypass the Roblox chat system. Currently 4 setting(s). **bans do not occur as of 4/26/2023**
- 
+
  
 | Name | Description |
 | :-------- | :------------------------- |
@@ -28,3 +28,8 @@ This is a script to bypass the Roblox chat system. Currently 4 setting(s). **ban
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/BitProxy/RBLXScripts/main/chatbypasser.lua"))()
 ```
+
+
+Last changed on 5/16/2023.
+
+Please wait until the next version which will be 0.4.0. Due to ByFron I have been testing the script in Roblox Studio, everything will be the same. !!
